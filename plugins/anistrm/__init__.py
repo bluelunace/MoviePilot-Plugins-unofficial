@@ -193,23 +193,24 @@ class ANiStrm(_PluginBase):
     # 自动获取当前季度
         season = self.__get_ani_season()
         url = f"https://ani.v300.eu.org/{season}/"
-        logger.debug(f'使用 Playwright 获取季度页面: {url}')
-        browser = PlaywrightHelper()
-        page = browser.get_page(url)
-        page.goto(url, timeout=30000)
-        page.wait_for_selector(".MuiListItemText-root", timeout=10000)
-        items = page.locator(".MuiListItemText-root").all_text_contents()
+        logger.debug(f"获取当前季度: {season}")
+        rep = PlaywrightHelper().get_page_source(url=url)
+        logger.debug(rep)
+        if not rep:
+          logger.warning("页面内容为空或非 HTML 格式")
+          return []
+        soup = BeautifulSoup(rep, "html.parser")
         file_names = []
-        for i in range(0, len(items), 3):
-                  try:
-                            filename = items[i].strip()
-                            if filename.endswith(".mp4"):
-                                      title = filename.rsplit(".mp4", 1)[0]
-                                      file_names.append(title)
-                  except IndexError:
-                            continue
-        browser.close()
-        logger.info(f"✅ 获取到番剧数: {len(file_names)}")
+        # 提取所有包含 .mp4 的条目
+        for div in soup.find_all("div"):
+          text = div.get_text(strip=True)
+          if "video_library" in text:
+              continue
+          if text.endswith(".mp4"):
+              title = text.rsplit(".mp4", 1)[0]
+              file_names.append(title)
+        if not file_names:
+          logger.warning(f"未在页面中找到 .MP4 文件：{url}")
         return file_names
 
 
