@@ -204,7 +204,7 @@ class ANiStrm(_PluginBase):
         for el in elements:
                   text = el.inner_text().strip()
                   if text.endswith('.mp4') or text.endswith('.m3u8'):
-                            file_names.append(text.replace('.mp4', '').replace('.m3u8', ''))
+                      file_names.append(text.replace('.mp4', '').replace('.m3u8', ''))
         page.close()
         browser.close()
         return file_names
