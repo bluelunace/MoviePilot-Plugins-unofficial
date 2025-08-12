@@ -192,14 +192,18 @@ class ANiStrm(_PluginBase):
     # """
     # 自动获取当前季度
         season = self.__get_ani_season()
-        url = f"https://ani.v300.eu.org/{season}/"
+        file_names = []
         logger.debug(f"获取当前季度: {season}")
-        rep = PlaywrightHelper().get_page_source(url=url)
-        logger.debug(rep)
-        if not rep:
-          logger.warning("页面内容为空或非 HTML 格式")
-          return []
-        soup = BeautifulSoup(rep, "html.parser")
+        try:
+            entries = self.get_anime_entries(season)
+            file_names = [entry["title"] for entry in entries]
+            if not file_names:
+                logger.warning(f"未获取到任何番剧条目: {season}")
+            return file_names
+        except Exception as e:
+            logger.error(f"获取季度番剧失败: {e}")
+            return file_names
+                  
         file_names = []
         # 提取所有包含 .mp4 的条目
         for div in soup.find_all("div"):
