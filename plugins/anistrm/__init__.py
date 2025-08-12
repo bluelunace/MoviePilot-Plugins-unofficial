@@ -13,8 +13,6 @@ from typing import Any, List, Dict, Tuple, Optional
 from app.log import logger
 import xml.dom.minidom
 from app.utils.dom import DomUtils
-import requests
-import cloudscraper
 
 def retry(ExceptionToCheck: Any,
           tries: int = 3, delay: int = 3, backoff: int = 1, logger: Any = None, ret: Any = None):
@@ -49,38 +47,6 @@ def retry(ExceptionToCheck: Any,
         return f_retry
 
     return deco_retry
-
-class RequestUtils:
-    def __init__(self, ua=None, proxies=None, cookies=None):
-        self.session = requests.Session()
-        self.session.headers.update({'User-Agent': ua} if ua else {})
-        if proxies:
-            self.session.proxies.update(proxies)
-        if cookies:
-            self.session.cookies.update(cookies)
-
-    def post(self, url, data=None, headers=None):
-        try:
-            response = self.session.post(url, data=data, headers=headers)
-            if "cf-error-code" in response.text or response.status_code >= 500:
-                logger.warn("⚠️ Cloudflare 错误触发，尝试使用 CloudScraper 重试")
-                return CloudScraperRequest(self.session.headers.get("User-Agent"), self.session.proxies).post(url, data=data, headers=headers)
-            return response
-        except Exception as e:
-            logger.warn(f"❌ 请求失败: {e}")
-            return None
-
-class CloudScraperRequest:
-    def __init__(self, ua=None, proxies=None):
-        self.scraper = cloudscraper.create_scraper(
-            browser={'custom': ua} if ua else None
-        )
-        if proxies:
-            self.scraper.proxies.update(proxies)
-
-    def post(self, url, data=None, headers=None):
-        return self.scraper.post(url, data=data, headers=headers)
-
 
 class ANiStrm(_PluginBase):
     # 插件名称
