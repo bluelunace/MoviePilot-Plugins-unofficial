@@ -151,11 +151,13 @@ class ANiStrm(_PluginBase):
 
     def get_anime_entries(self, season: str = "2025-7") -> list:
         url = f"https://ani.v300.eu.org/{season}/"
-        logger.debug(url)
+        logger.debug(f"抓取番剧页面: {url}")
         entries = []
         try:
             page = self.get_page(url)
-            logger.debug(page.text)
+            if not page:
+                logger.warn("❌ 页面加载失败，返回空列表")
+                return []
             page.wait_for_selector(".MuiListItemText-root", timeout=10000)
             items = page.locator(".MuiListItemText-root").all_text_contents()
             for i in range(0, len(items), 3):
@@ -169,11 +171,14 @@ class ANiStrm(_PluginBase):
                             "filename": filename,
                             "updated": updated,
                             "size": size
+                            "url": url  # 可扩展为真实播放链接
                         })
-                except IndexError:
+                except IndexError as inner_err:
+                    logger.warn(f"⚠️ 条目解析失败: {inner_err}")
                     continue
         except Exception as e:
             logger.error(f"Playwright 获取番剧条目失败: {e}")
+        logger.info(f"✅ 获取番剧数: {len(entries)}")
         return entries
 
           
