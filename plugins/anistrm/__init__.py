@@ -139,7 +139,6 @@ class ANiStrm(_PluginBase):
     # """
     # 自动获取当前季度
         logger.debug(f'文件00')
-        logger.debug(f'文件001')
         url = f'https://ani.v300.eu.org/{self.__get_ani_season()}/'
         logger.debug(f'文件002')
         logger.debug(f'请求季度页面 URL: {url}')
@@ -147,24 +146,24 @@ class ANiStrm(_PluginBase):
         rep = RequestUtils(
             ua=settings.USER_AGENT if settings.USER_AGENT else None,
             proxies=settings.PROXY if settings.PROXY else None
-        ).get(url=url)
+        ).get_html(url=url)
         logger.debug(url)
+        if not rep or "<html" not in rep:
+            logger.warning("页面内容为空或非 HTML 格式")
+            return []
         # 解析 HTML 内容
-        soup = BeautifulSoup(rep.text, "html.parser")
-        logger.debug(rep.text)
-        logger.debug(soup.find("span"))
+        soup = BeautifulSoup(rep, "html.parser")
+        logger.debug(f'文件001')
+        logger.debug(rep)
         file_names = []
         for tag in soup.find_all("span"):
             name = tag.text.strip()
             logger.debug(f'文件5')
             if name.endswith(".mp4"):
-                if keyword:
-                    if keyword.lower() in name.lower():
-                        logger.debug(f'文件1')
-                        file_names.append(name)
-                else:
-                    logger.debug(f'文件2')
-                    file_names.append(name)
+                      logger.debug(f'文件2')
+                      file_names.append(name)
+        if not file_names:
+            logger.warning(f"未在页面中找到 .MP4 文件：{url}")
         logger.debug(f'文件3')
         return file_names
 
