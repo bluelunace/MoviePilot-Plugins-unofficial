@@ -156,7 +156,7 @@ class ANiStrm(_PluginBase):
     # """
     # 自动获取当前季度
         season = self.__get_ani_season()
-        url = f'https://openani.an-i.workers.dev/{season}/'
+        url = f'https://ani.v300.eu.org/{season}/'
         logger.debug(f'请求季度页面 URL: {url}')
         rep = self.get_html(url=url)
         if not rep:
@@ -178,8 +178,6 @@ class ANiStrm(_PluginBase):
         if not file_names:
             logger.warning(f"未在页面中找到 .MP4 文件：{url}")
         return file_names
-
-
 
 
     @retry(Exception, tries=3, logger=logger, ret=[])
