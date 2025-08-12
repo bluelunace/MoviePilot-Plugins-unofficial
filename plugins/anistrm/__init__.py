@@ -193,20 +193,23 @@ class ANiStrm(_PluginBase):
     # 自动获取当前季度
         season = self.__get_ani_season()
         url = f"https://ani.v300.eu.org/{season}/"
-        logger.debug(f"抓取番剧页面: {url}")
+        logger.debug(f'使用 Playwright 获取季度页面: {url}')
         browser = PlaywrightHelper()
-        page = browser.new_page()
+        page = browser.get_page(url)
         page.goto(url, timeout=30000)
-
-        # 提取所有文件名链接
-        elements = page.query_selector_all('a')
+        page.wait_for_selector(".MuiListItemText-root", timeout=10000)
+        items = page.locator(".MuiListItemText-root").all_text_contents()
         file_names = []
-        for el in elements:
-                  text = el.inner_text().strip()
-                  if text.endswith('.mp4') or text.endswith('.m3u8'):
-                      file_names.append(text.replace('.mp4', '').replace('.m3u8', ''))
-        page.close()
+        for i in range(0, len(items), 3):
+                  try:
+                            filename = items[i].strip()
+                            if filename.endswith(".mp4"):
+                                      title = filename.rsplit(".mp4", 1)[0]
+                                      file_names.append(title)
+                  except IndexError:
+                            continue
         browser.close()
+        logger.info(f"✅ 获取到番剧数: {len(file_names)}")
         return file_names
 
 
