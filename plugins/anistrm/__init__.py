@@ -130,7 +130,7 @@ class ANiStrm(_PluginBase):
                 return f'{current_year}-{month}'
 
     @retry(Exception, tries=3, logger=logger, ret=[])  
-    def get_current_season_list(season: str = None, keyword: str = None) -> List:
+    def get_current_season_list(season: str = None, keyword: str = None) -> List[str]:
     # """
     # 获取当前季度的番剧列表（.mp4 文件名）
     # :param season: 指定季度（如 "2025-7"），为空则自动获取当前季度
@@ -146,11 +146,13 @@ class ANiStrm(_PluginBase):
             ua=settings.USER_AGENT if settings.USER_AGENT else None,
             proxies=settings.PROXY if settings.PROXY else None
         ).get(url=url)
+        logger.debug(f'{url}')
         # 解析 HTML 内容
         soup = BeautifulSoup(rep.text, "html.parser")
+        logger.debug(rep.text)
+        logger.debug(.find_all("span"))
         file_names = []
         for tag in soup.find_all("span"):
-            logger.debug(f'文件4')
             name = tag.text.strip()
             logger.debug(f'文件5')
             if name.endswith(".mp4"):
