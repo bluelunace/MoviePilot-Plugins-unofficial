@@ -139,6 +139,7 @@ class ANiStrm(_PluginBase):
     # """
     # 自动获取当前季度
         season = self.__get_ani_season()
+        logger.debug(f'文件0')
         url = f"https://ani.v300.eu.org/{season}/"
         logger.debug(f"请求季度页面 URL: {url}")
         rep = RequestUtils(
