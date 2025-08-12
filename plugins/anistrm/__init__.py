@@ -148,35 +148,35 @@ class ANiStrm(_PluginBase):
             logger.warn(f"❌ 页面请求失败: {e}")
             return ""
 
-def get_anime_entries(self, season: str = "2025-7") -> list:
-    """
-    获取 ANi Open 当前季度番剧条目（文件名、更新时间、大小）
-    """
-    url = f"https://ani.v300.eu.org/{season}/"
-    entries = []
+    def get_anime_entries(self, season: str = "2025-7") -> list:
+        """
+        获取 ANi Open 当前季度番剧条目（文件名、更新时间、大小）
+        """
+        url = f"https://ani.v300.eu.org/{season}/"
+        entries = []
 
-    try:
-        page = self.get_page(url)
-        page.wait_for_selector(".MuiListItemText-root", timeout=10000)
-        items = page.locator(".MuiListItemText-root").all_text_contents()
-
+        try:
+            page = self.get_page(url)
+            page.wait_for_selector(".MuiListItemText-root", timeout=10000)
+            items = page.locator(".MuiListItemText-root").all_text_contents()
+    
         for i in range(0, len(items), 3):
-            try:
-                filename = items[i].strip()
-                updated = items[i + 1].strip()
-                size = items[i + 2].strip()
-                if filename.endswith(".mp4"):
-                    entries.append({
-                        "title": filename.rsplit(".mp4", 1)[0],
-                        "filename": filename,
-                        "updated": updated,
-                        "size": size
-                    })
-            except IndexError:
-                continue
-    except Exception as e:
-        logger.error(f"Playwright 获取番剧条目失败: {e}")
-    return entries
+                try:
+                    filename = items[i].strip()
+                    updated = items[i + 1].strip()
+                    size = items[i + 2].strip()
+                    if filename.endswith(".mp4"):
+                        entries.append({
+                            "title": filename.rsplit(".mp4", 1)[0],
+                            "filename": filename,
+                            "updated": updated,
+                            "size": size
+                        })
+                except IndexError:
+                    continue
+        except Exception as e:
+            logger.error(f"Playwright 获取番剧条目失败: {e}")
+        return entries
 
           
     @retry(Exception, tries=3, logger=logger, ret=[])  
