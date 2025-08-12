@@ -196,12 +196,21 @@ class ANiStrm(_PluginBase):
         logger.debug(f"获取当前季度: {season}")
         rep = PlaywrightHelper().get_page_source(url=url)
         logger.debug(rep)
-        logger.debug(f"获取当前季度番剧列表: {season}")
+        if not rep:
+          logger.warning("页面内容为空或非 HTML 格式")
+          return []
+        soup = BeautifulSoup(rep, "html.parser")
+        file_names = []
+        # 提取所有包含 .mp4 的条目
+        for div in soup.find_all("div"):
+          text = div.get_text(strip=True)
+          if text.endswith(".mp4"):
+              title = text.split(".mp4")[0]
+              file_names.append(title)
+        if not file_names:
+          logger.warning(f"未在页面中找到 .MP4 文件：{url}")
+        return file_names
 
-        titles = [entry["title"] for entry in entries]
-        if not titles:
-            logger.warning(f"未获取到任何番剧条目: {season}")
-        return titles
 
 
     @retry(Exception, tries=3, logger=logger, ret=[])
