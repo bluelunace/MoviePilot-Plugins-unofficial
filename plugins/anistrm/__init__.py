@@ -138,6 +138,7 @@ class ANiStrm(_PluginBase):
     # :return: 番剧文件名列表
     # """
     # 自动获取当前季度
+        logger.debug(f'文件00')
         season = self.__get_ani_season()
         logger.debug(f'文件0')
         url = f"https://ani.v300.eu.org/{season}/"
