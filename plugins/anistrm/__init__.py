@@ -130,7 +130,7 @@ class ANiStrm(_PluginBase):
                 return f'{current_year}-{month}'
 
     @retry(Exception, tries=3, logger=logger, ret=[])  
-    def get_current_season_list(season: str = None, keyword: str = None) -> List[str]:
+    def get_current_season_list(self) -> List[str]:
     # """
     # 获取当前季度的番剧列表（.mp4 文件名）
     # :param season: 指定季度（如 "2025-7"），为空则自动获取当前季度
@@ -139,9 +139,7 @@ class ANiStrm(_PluginBase):
     # """
     # 自动获取当前季度
         logger.debug(f'文件00')
-        season = self.__get_ani_season()
-        logger.debug(f'文件0')
-        url = f"https://ani.v300.eu.org/{season}/"
+        url = f'https://ani.v300.eu.org/{self.__get_ani_season()}/'
         logger.debug(f"请求季度页面 URL: {url}")
         rep = RequestUtils(
             ua=settings.USER_AGENT if settings.USER_AGENT else None,
