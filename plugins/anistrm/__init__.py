@@ -133,7 +133,7 @@ class ANiStrm(_PluginBase):
     def get_current_season_list(self) -> List:
         url = f'https://ani.v300.eu.org/{self.__get_ani_season()}/'
 
-        rep = RequestUtils(ua=settings.USER_AGENT if settings.USER_AGENT else None,
+        rep = RequestUtils(ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0",
                            proxies=settings.PROXY if settings.PROXY else None).post(url=url)
         logger.debug(rep.text)
         files_json = rep.json()['files']
