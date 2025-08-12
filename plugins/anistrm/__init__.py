@@ -195,7 +195,7 @@ class ANiStrm(_PluginBase):
         url = f"https://ani.v300.eu.org/{season}/"
         logger.debug(f"获取当前季度: {season}")
         rep = PlaywrightHelper().get_page_source(url=url)
-        logger.debug(rep.text)
+        logger.debug(rep)
         logger.debug(f"获取当前季度番剧列表: {season}")
 
         titles = [entry["title"] for entry in entries]
