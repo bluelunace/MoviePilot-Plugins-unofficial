@@ -139,8 +139,11 @@ class ANiStrm(_PluginBase):
     # """
     # 自动获取当前季度
         logger.debug(f'文件00')
+        logger.debug(f'文件001')
         url = f'https://ani.v300.eu.org/{self.__get_ani_season()}/'
-        logger.debug(f"请求季度页面 URL: {url}")
+        logger.debug(f'文件002')
+        logger.debug(f'请求季度页面 URL: {url}')
+        logger.debug(f'文件003')
         rep = RequestUtils(
             ua=settings.USER_AGENT if settings.USER_AGENT else None,
             proxies=settings.PROXY if settings.PROXY else None
