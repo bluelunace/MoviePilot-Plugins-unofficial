@@ -202,8 +202,8 @@ class ANiStrm(_PluginBase):
         soup = BeautifulSoup(rep, "html.parser")
         file_names = []
         # 提取所有包含 .mp4 的条目
-        for div in soup.find_all("div"):
-          text = div.get_text(strip=True)
+        for span in soup.find_all("span", class_="tool_tip"):
+          text = span.get_text(strip=True)
           if "video_library" in text:
               continue
           if text.endswith(".mp4"):
