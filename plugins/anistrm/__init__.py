@@ -52,7 +52,7 @@ def retry(ExceptionToCheck: Any,
 
 class ANiStrm(_PluginBase):
     # 插件名称
-    plugin_name = "ANiStrm"
+    plugin_name = "ANiStrm-proxy"
     # 插件描述
     plugin_desc = "自动获取当季所有番剧，免去下载，轻松拥有一个番剧媒体库"
     # 插件图标
@@ -62,7 +62,7 @@ class ANiStrm(_PluginBase):
     # 插件作者
     plugin_author = "honue,bluelunace"
     # 作者主页
-    author_url = "https://github.com/honue"
+    author_url = "https://github.com/bluelunace"
     # 插件配置项ID前缀
     plugin_config_prefix = "anistrm_"
     # 加载顺序
