@@ -17,6 +17,7 @@ from bs4 import BeautifulSoup
 import requests
 from app.helper.browser import PlaywrightHelper
 
+
 def retry(ExceptionToCheck: Any,
           tries: int = 3, delay: int = 3, backoff: int = 1, logger: Any = None, ret: Any = None):
     """
@@ -187,7 +188,7 @@ class ANiStrm(_PluginBase):
     # 自动获取当前季度
         season = self.__get_ani_season()
         logger.debug(f"获取当前季度: {season}")
-        browser = PlaywrightHelper()
+        browser = browser = PlaywrightHelper()
         entries = browser.get_anime_entries(season)
         logger.debug(f"获取当前季度番剧列表: {season}")
 
