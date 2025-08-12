@@ -15,6 +15,7 @@ import xml.dom.minidom
 from app.utils.dom import DomUtils
 from bs4 import BeautifulSoup
 import requests
+from app.helper.browser import PlaywrightHelper
 
 def retry(ExceptionToCheck: Any,
           tries: int = 3, delay: int = 3, backoff: int = 1, logger: Any = None, ret: Any = None):
@@ -129,7 +130,9 @@ class ANiStrm(_PluginBase):
             if month in [10, 7, 4, 1]:
                 self._date = f'{current_year}-{month}'
                 return f'{current_year}-{month}'
-                      
+
+
+          
     def get_html(self, url: str) -> str:
         headers = {
             "User-Agent": settings.USER_AGENT or "Mozilla/5.0",
@@ -145,6 +148,36 @@ class ANiStrm(_PluginBase):
             logger.warn(f"❌ 页面请求失败: {e}")
             return ""
 
+def get_anime_entries(self, season: str = "2025-7") -> list:
+    """
+    获取 ANi Open 当前季度番剧条目（文件名、更新时间、大小）
+    """
+    url = f"https://ani.v300.eu.org/{season}/"
+    entries = []
+
+    try:
+        page = self.get_page(url)
+        page.wait_for_selector(".MuiListItemText-root", timeout=10000)
+        items = page.locator(".MuiListItemText-root").all_text_contents()
+
+        for i in range(0, len(items), 3):
+            try:
+                filename = items[i].strip()
+                updated = items[i + 1].strip()
+                size = items[i + 2].strip()
+                if filename.endswith(".mp4"):
+                    entries.append({
+                        "title": filename.rsplit(".mp4", 1)[0],
+                        "filename": filename,
+                        "updated": updated,
+                        "size": size
+                    })
+            except IndexError:
+                continue
+    except Exception as e:
+        logger.error(f"Playwright 获取番剧条目失败: {e}")
+    return entries
+
           
     @retry(Exception, tries=3, logger=logger, ret=[])  
     def get_current_season_list(self) -> List[str]:
@@ -156,28 +189,13 @@ class ANiStrm(_PluginBase):
     # """
     # 自动获取当前季度
         season = self.__get_ani_season()
-        url = f'https://ani.v300.eu.org/{season}/'
-        logger.debug(f'请求季度页面 URL: {url}')
-        rep = self.get_html(url=url)
-        if not rep:
-            logger.warning("页面内容为空或非 HTML 格式")
-        # 解析 HTML 内容
-        soup = BeautifulSoup(rep, "html.parser")
-        logger.debug(f'文件001')
-        logger.debug(rep)
-        file_names = []
-        # 提取所有包含 .mp4 的条目
-        for div in soup.find_all("div"):
-            text = div.get_text(strip=True)
-            logger.debug(f'文件002')
-            if text.endswith(".mp4"):
-                logger.debug(f'文件003')
-                title = text.split(".mp4")[0]
-                file_names.append(title)
+        browser = PlaywrightHelper()
+        entries = browser.get_anime_entries(season)
 
-        if not file_names:
-            logger.warning(f"未在页面中找到 .MP4 文件：{url}")
-        return file_names
+        titles = [entry["title"] for entry in entries]
+        if not titles:
+            logger.warning(f"未获取到任何番剧条目: {season}")
+        return titles
 
 
     @retry(Exception, tries=3, logger=logger, ret=[])
