@@ -12,8 +12,6 @@ from typing import Any, List, Dict, Tuple, Optional
 from app.log import logger
 import xml.dom.minidom
 from app.utils.dom import DomUtils
-import requests
-import cloudscraper
 
 
 def retry(ExceptionToCheck: Any,
@@ -49,39 +47,6 @@ def retry(ExceptionToCheck: Any,
         return f_retry
 
     return deco_retry
-
-
-class RequestUtils:
-    def __init__(self, ua=None, proxies=None, cookies=None):
-        self.session = requests.Session()
-        self.session.headers.update({'User-Agent': ua} if ua else {})
-        if proxies:
-            self.session.proxies.update(proxies)
-        if cookies:
-            self.session.cookies.update(cookies)
-
-    def post(self, url, data=None, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)','Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8','Accept-Language': 'en-US,en;q=0.5','Accept-Encoding': 'gzip, deflate','Connection': 'keep-alive'}):
-        try:
-            response = self.session.post(url, data=data, headers=headers)
-            if "cf-error-code" in response.text or response.status_code >= 500:
-                logger.warn("⚠️ Cloudflare 错误触发，尝试使用 CloudScraper 重试")
-                return CloudScraperRequest(self.session.headers.get("User-Agent"), self.session.proxies).post(url, data=data, headers=headers)
-            return response
-        except Exception as e:
-            logger.warn(f"❌ 请求失败: {e}")
-            return None
-
-class CloudScraperRequest:
-    def __init__(self, ua=None, proxies=None):
-        self.scraper = cloudscraper.create_scraper(
-            browser={'custom': ua} if ua else None
-        )
-        if proxies:
-            self.scraper.proxies.update(proxies)
-
-    def post(self, url, data=None, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)','Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8','Accept-Language': 'en-US,en;q=0.5','Accept-Encoding': 'gzip, deflate','Connection': 'keep-alive'}):
-        logger.warn("使用 CloudScraper 重试")
-        return self.scraper.post(url, data=data, headers=headers)
 
 
 class ANiStrm(_PluginBase):
@@ -168,7 +133,7 @@ class ANiStrm(_PluginBase):
         url = f'https://ani.v300.eu.org/{self.__get_ani_season()}/'
 
         rep = RequestUtils(ua=settings.USER_AGENT if settings.USER_AGENT else None,
-                           proxies=settings.PROXY if settings.PROXY else None).post(url=url)
+                           proxies=settings.PROXY if settings.PROXY else None).get(url=url)
         logger.debug(rep.text)
         files_json = rep.json()['files']
         return [file['name'] for file in files_json]
