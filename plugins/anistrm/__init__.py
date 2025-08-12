@@ -149,18 +149,13 @@ class ANiStrm(_PluginBase):
             return ""
 
     def get_anime_entries(self, season: str = "2025-7") -> list:
-        """
-        获取 ANi Open 当前季度番剧条目（文件名、更新时间、大小）
-        """
         url = f"https://ani.v300.eu.org/{season}/"
         entries = []
-
         try:
             page = self.get_page(url)
             page.wait_for_selector(".MuiListItemText-root", timeout=10000)
             items = page.locator(".MuiListItemText-root").all_text_contents()
-    
-        for i in range(0, len(items), 3):
+            for i in range(0, len(items), 3):
                 try:
                     filename = items[i].strip()
                     updated = items[i + 1].strip()
