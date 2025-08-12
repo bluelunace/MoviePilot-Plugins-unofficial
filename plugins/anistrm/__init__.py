@@ -203,17 +203,6 @@ class ANiStrm(_PluginBase):
         except Exception as e:
             logger.error(f"获取季度番剧失败: {e}")
             return file_names
-                  
-        file_names = []
-        # 提取所有包含 .mp4 的条目
-        for div in soup.find_all("div"):
-          text = div.get_text(strip=True)
-          if text.endswith(".mp4"):
-              title = text.split(".mp4")[0]
-              file_names.append(title)
-        if not file_names:
-          logger.warning(f"未在页面中找到 .MP4 文件：{url}")
-        return file_names
 
 
 
