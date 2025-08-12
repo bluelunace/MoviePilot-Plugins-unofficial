@@ -170,7 +170,7 @@ class ANiStrm(_PluginBase):
                             "title": filename.rsplit(".mp4", 1)[0],
                             "filename": filename,
                             "updated": updated,
-                            "size": size
+                            "size": size,
                             "url": url  # 可扩展为真实播放链接
                         })
                 except IndexError as inner_err:
