@@ -129,7 +129,23 @@ class ANiStrm(_PluginBase):
             if month in [10, 7, 4, 1]:
                 self._date = f'{current_year}-{month}'
                 return f'{current_year}-{month}'
+                      
+    def get_html(self, url: str) -> str:
+        headers = {
+            "User-Agent": settings.USER_AGENT or "Mozilla/5.0",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "zh-CN,zh;q=0.9",
+        }
+        try:
+            logger.debug(f"请求页面: {url}")
+            response = requests.get(url, headers=headers, timeout=10)
+            response.raise_for_status()
+            return response.text
+        except requests.RequestException as e:
+            logger.warn(f"❌ 页面请求失败: {e}")
+            return ""
 
+          
     @retry(Exception, tries=3, logger=logger, ret=[])  
     def get_current_season_list(self) -> List[str]:
     # """
@@ -142,7 +158,8 @@ class ANiStrm(_PluginBase):
         logger.debug(f'文件00')
         url = f'https://ani.v300.eu.org/{self.__get_ani_season()}/'
         logger.debug(f'请求季度页面 URL: {url}')
-        rep = requests.get(url=url)
+        rep = self.get_html(url=url)
+        # rep = requests.get(url=url)
         logger.debug(url)
         logger.debug(f'文件002')
         if not rep:
