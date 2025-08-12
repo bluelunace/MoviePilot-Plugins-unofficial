@@ -139,13 +139,14 @@ class ANiStrm(_PluginBase):
     # """
     # 自动获取当前季度
         if not season:
+              logger.debug(f'文件0')
               season = self.__get_ani_season()
         url = f"https://ani.v300.eu.org/{season}/"
         rep = RequestUtils(
             ua=settings.USER_AGENT if settings.USER_AGENT else None,
             proxies=settings.PROXY if settings.PROXY else None
         ).get(url=url)
-
+        logger.debug(f'文件4')
         # 解析 HTML 内容
         soup = BeautifulSoup(rep.text, "html.parser")
         file_names = []
@@ -155,10 +156,12 @@ class ANiStrm(_PluginBase):
             if name.endswith(".mp4"):
                 if keyword:
                     if keyword.lower() in name.lower():
+                        logger.debug(f'文件1')
                         file_names.append(name)
                 else:
+                    logger.debug(f'文件2')
                     file_names.append(name)
-        logger.debug(file_names)
+        logger.debug(f'文件3')
         return file_names
 
 
