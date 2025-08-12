@@ -141,12 +141,12 @@ class ANiStrm(_PluginBase):
         if not season:
               logger.debug(f'文件0')
               season = self.__get_ani_season()
-        url = f"https://ani.v300.eu.org/{season}/"
+        url = f"https://ani.v300.eu.org/{self.__get_ani_season()}/"
         rep = RequestUtils(
             ua=settings.USER_AGENT if settings.USER_AGENT else None,
             proxies=settings.PROXY if settings.PROXY else None
         ).get(url=url)
-        logger.debug(f'{url}')
+        logger.debug(url)
         # 解析 HTML 内容
         soup = BeautifulSoup(rep.text, "html.parser")
         logger.debug(rep.text)
