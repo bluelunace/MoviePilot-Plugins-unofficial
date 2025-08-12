@@ -129,17 +129,7 @@ class ANiStrm(_PluginBase):
                 self._date = f'{current_year}-{month}'
                 return f'{current_year}-{month}'
 
-    @retry(Exception, tries=3, logger=logger, ret=[])
-    def get_current_season_list(self) -> List:
-        url = f'https://ani.v300.eu.org/{self.__get_ani_season()}/'
-
-        rep = RequestUtils(ua=settings.USER_AGENT if settings.USER_AGENT else None,
-                           proxies=settings.PROXY if settings.PROXY else None).get(url=url)
-        logger.debug(rep.text)
-        files_json = rep.json()['files']
-        return [file['name'] for file in files_json]
-
-          
+    @retry(Exception, tries=3, logger=logger, ret=[])  
     def get_current_season_list(season: str = None, keyword: str = None) -> List[str]:
     # """
     # 获取当前季度的番剧列表（.mp4 文件名）
@@ -148,7 +138,9 @@ class ANiStrm(_PluginBase):
     # :return: 番剧文件名列表
     # """
     # 自动获取当前季度
-        url = f"https://openani.an-i.workers.dev/{season}/"
+        if not season:
+              season = self.__get_ani_season()
+        url = f"https://ani.v300.eu.org/{season}/"
         rep = RequestUtils(
             ua=settings.USER_AGENT if settings.USER_AGENT else None,
             proxies=settings.PROXY if settings.PROXY else None
