@@ -141,16 +141,14 @@ class ANiStrm(_PluginBase):
     # 自动获取当前季度
         logger.debug(f'文件00')
         url = f'https://ani.v300.eu.org/{self.__get_ani_season()}/'
-        logger.debug(f'文件002')
         logger.debug(f'请求季度页面 URL: {url}')
-        logger.debug(f'文件003')
         rep = requests.get(url=url)
         logger.debug(url)
-        if "text/html" not in response.headers.get("Content-Type", ""):
-            logger.warning("返回内容不是 HTML")
+        logger.debug(f'文件002')
         if not rep or "<html" not in rep:
             logger.warning("页面内容为空或非 HTML 格式")
             return []
+        logger.debug(f'文件003')
         # 解析 HTML 内容
         soup = BeautifulSoup(rep, "html.parser")
         logger.debug(f'文件001')
