@@ -155,32 +155,30 @@ class ANiStrm(_PluginBase):
     # :return: 番剧文件名列表
     # """
     # 自动获取当前季度
-        logger.debug(f'文件00')
-        url = f'https://ani.v300.eu.org/{self.__get_ani_season()}/'
+        season = self.__get_ani_season()
+        url = f'https://openani.an-i.workers.dev/{season}/'
         logger.debug(f'请求季度页面 URL: {url}')
         rep = self.get_html(url=url)
-        # rep = requests.get(url=url)
-        logger.debug(url)
-        logger.debug(f'文件002')
         if not rep:
             logger.warning("页面内容为空或非 HTML 格式")
-        logger.debug(f'文件003')
-        logger.debug(rep)
         # 解析 HTML 内容
         soup = BeautifulSoup(rep, "html.parser")
         logger.debug(f'文件001')
         logger.debug(rep)
         file_names = []
-        for tag in soup.find_all("span"):
-            name = tag.text.strip()
-            logger.debug(f'文件5')
-            if name.endswith(".mp4"):
-                      logger.debug(f'文件2')
-                      file_names.append(name)
+        # 提取所有包含 .mp4 的条目
+        for div in soup.find_all("div"):
+            text = div.get_text(strip=True)
+            logger.debug(f'文件002')
+            if text.endswith(".mp4"):
+                logger.debug(f'文件003')
+                title = text.split(".mp4")[0]
+                file_names.append(title)
+
         if not file_names:
             logger.warning(f"未在页面中找到 .MP4 文件：{url}")
-        logger.debug(f'文件3')
         return file_names
+
 
 
 
