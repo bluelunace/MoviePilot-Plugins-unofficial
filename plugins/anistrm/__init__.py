@@ -148,11 +148,11 @@ class ANiStrm(_PluginBase):
         ).get(url=url)
         # 解析 HTML 内容
         soup = BeautifulSoup(rep.text, "html.parser")
-        logger.debug(f'文件5')
         file_names = []
-        logger.debug(f'文件4')
         for tag in soup.find_all("span"):
+            logger.debug(f'文件4')
             name = tag.text.strip()
+            logger.debug(f'文件5')
             if name.endswith(".mp4"):
                 if keyword:
                     if keyword.lower() in name.lower():
