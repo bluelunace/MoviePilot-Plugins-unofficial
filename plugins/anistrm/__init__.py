@@ -192,17 +192,22 @@ class ANiStrm(_PluginBase):
     # """
     # 自动获取当前季度
         season = self.__get_ani_season()
+        url = f"https://ani.v300.eu.org/{season}/"
+        logger.debug(f"抓取番剧页面: {url}")
+        browser = PlaywrightHelper()
+        page = browser.new_page()
+        page.goto(url, timeout=30000)
+
+        # 提取所有文件名链接
+        elements = page.query_selector_all('a')
         file_names = []
-        logger.debug(f"获取当前季度: {season}")
-        try:
-            entries = self.get_anime_entries(season)
-            file_names = [entry["title"] for entry in entries]
-            if not file_names:
-                logger.warning(f"未获取到任何番剧条目: {season}")
-            return file_names
-        except Exception as e:
-            logger.error(f"获取季度番剧失败: {e}")
-            return file_names
+        for el in elements:
+                  text = el.inner_text().strip()
+                  if text.endswith('.mp4')：
+                            file_names.append(text.replace('.mp4', ''))
+        page.close()
+        browser.close()
+        return file_names
 
 
 
