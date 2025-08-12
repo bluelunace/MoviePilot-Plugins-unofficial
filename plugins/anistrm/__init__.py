@@ -193,7 +193,7 @@ class ANiStrm(_PluginBase):
     # 自动获取当前季度
         season = self.__get_ani_season()
         logger.debug(f"获取当前季度: {season}")
-        browser = browser = PlaywrightHelper()
+        browser = PlaywrightHelper()
         entries = browser.get_anime_entries(season)
         logger.debug(f"获取当前季度番剧列表: {season}")
 
