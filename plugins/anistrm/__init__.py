@@ -145,10 +145,10 @@ class ANiStrm(_PluginBase):
         rep = requests.get(url=url)
         logger.debug(url)
         logger.debug(f'文件002')
-        if not rep or "<html" not in rep:
+        if not rep:
             logger.warning("页面内容为空或非 HTML 格式")
-            return []
         logger.debug(f'文件003')
+        logger.debug(rep.text)
         # 解析 HTML 内容
         soup = BeautifulSoup(rep, "html.parser")
         logger.debug(f'文件001')
