@@ -50,7 +50,7 @@ def retry(ExceptionToCheck: Any,
 
 class ANiStrm(_PluginBase):
     # 插件名称
-    plugin_name = "ANiStrm-proxy"
+    plugin_name = "ANiStrm"
     # 插件描述
     plugin_desc = "自动获取当季所有番剧，免去下载，轻松拥有一个番剧媒体库"
     # 插件图标
@@ -75,10 +75,6 @@ class ANiStrm(_PluginBase):
     _onlyonce = False
     _fulladd = False
     _storageplace = None
-    _cookies = {
-              "__cf_bm": "your_cookie_value",
-              # 其他 Cloudflare 所需的 cookie 键值对
-              }
 
     # 定时器
     _scheduler: Optional[BackgroundScheduler] = None
