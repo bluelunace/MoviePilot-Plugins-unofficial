@@ -207,8 +207,7 @@ class ANiStrm(_PluginBase):
           if "video_library" in text:
               continue
           if text.endswith(".mp4"):
-              title = text.rsplit(".mp4", 1)[0]
-              file_names.append(title)
+              file_names.append(text.strip())
         if not file_names:
           logger.warning(f"未在页面中找到 .MP4 文件：{url}")
         return file_names
