@@ -165,7 +165,7 @@ class ANiStrm(_PluginBase):
         if not rep:
             logger.warning("页面内容为空或非 HTML 格式")
         logger.debug(f'文件003')
-        logger.debug(rep.text)
+        logger.debug(rep)
         # 解析 HTML 内容
         soup = BeautifulSoup(rep, "html.parser")
         logger.debug(f'文件001')
