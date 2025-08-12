@@ -64,11 +64,11 @@ class RequestUtils:
         try:
             response = self.session.post(url, data=data, headers=headers)
             if "cf-error-code" in response.text or response.status_code >= 500:
-                print("⚠️ Cloudflare 错误触发，尝试使用 CloudScraper 重试")
+                logger.warn("⚠️ Cloudflare 错误触发，尝试使用 CloudScraper 重试")
                 return CloudScraperRequest(self.session.headers.get("User-Agent"), self.session.proxies).post(url, data=data, headers=headers)
             return response
         except Exception as e:
-            print(f"❌ 请求失败: {e}")
+            logger.warn(f"❌ 请求失败: {e}")
             return None
 
 class CloudScraperRequest:
@@ -80,6 +80,7 @@ class CloudScraperRequest:
             self.scraper.proxies.update(proxies)
 
     def post(self, url, data=None, headers=None):
+        logger.warn("使用 CloudScraper 重试")
         return self.scraper.post(url, data=data, headers=headers)
 
 
@@ -91,7 +92,7 @@ class ANiStrm(_PluginBase):
     # 插件图标
     plugin_icon = "https://raw.githubusercontent.com/honue/MoviePilot-Plugins/main/icons/anistrm.png"
     # 插件版本
-    plugin_version = "2.5.5"
+    plugin_version = "2.5.9"
     # 插件作者
     plugin_author = "honue,bluelunace"
     # 作者主页
@@ -166,7 +167,7 @@ class ANiStrm(_PluginBase):
     def get_current_season_list(self) -> List:
         url = f'https://ani.v300.eu.org/{self.__get_ani_season()}/'
 
-        rep = RequestUtils(ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0",
+        rep = RequestUtils(ua=settings.USER_AGENT if settings.USER_AGENT else None,
                            proxies=settings.PROXY if settings.PROXY else None).post(url=url)
         logger.debug(rep.text)
         files_json = rep.json()['files']
