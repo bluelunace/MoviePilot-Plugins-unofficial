@@ -60,7 +60,7 @@ class RequestUtils:
         if cookies:
             self.session.cookies.update(cookies)
 
-    def post(self, url, data=None, headers=None):
+    def post(self, url, data=None, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)','Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8','Accept-Language': 'en-US,en;q=0.5','Accept-Encoding': 'gzip, deflate','Connection': 'keep-alive'}):
         try:
             response = self.session.post(url, data=data, headers=headers)
             if "cf-error-code" in response.text or response.status_code >= 500:
@@ -79,7 +79,7 @@ class CloudScraperRequest:
         if proxies:
             self.scraper.proxies.update(proxies)
 
-    def post(self, url, data=None, headers=None):
+    def post(self, url, data=None, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)','Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8','Accept-Language': 'en-US,en;q=0.5','Accept-Encoding': 'gzip, deflate','Connection': 'keep-alive'}):
         logger.warn("使用 CloudScraper 重试")
         return self.scraper.post(url, data=data, headers=headers)
 
@@ -92,7 +92,7 @@ class ANiStrm(_PluginBase):
     # 插件图标
     plugin_icon = "https://raw.githubusercontent.com/honue/MoviePilot-Plugins/main/icons/anistrm.png"
     # 插件版本
-    plugin_version = "2.5.9"
+    plugin_version = "2.6.0"
     # 插件作者
     plugin_author = "honue,bluelunace"
     # 作者主页
