@@ -150,7 +150,7 @@ class ANiStrm(_PluginBase):
         # 解析 HTML 内容
         soup = BeautifulSoup(rep.text, "html.parser")
         logger.debug(rep.text)
-        logger.debug(.find_all("span"))
+        logger.debug(soup.find_all("span"))
         file_names = []
         for tag in soup.find_all("span"):
             name = tag.text.strip()
