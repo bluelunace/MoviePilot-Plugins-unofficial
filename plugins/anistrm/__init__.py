@@ -141,13 +141,12 @@ class ANiStrm(_PluginBase):
 
           
     def get_current_season_list(season: str = None, keyword: str = None) -> List[str]:
-    """
-    获取当前季度的番剧列表（.strm 文件名）
-
-    :param season: 指定季度（如 "2025-7"），为空则自动获取当前季度
-    :param keyword: 可选关键词过滤
-    :return: 番剧文件名列表
-    """
+    # """
+    # 获取当前季度的番剧列表（.mp4 文件名）
+    # :param season: 指定季度（如 "2025-7"），为空则自动获取当前季度
+    # :param keyword: 可选关键词过滤
+    # :return: 番剧文件名列表
+    # """
     # 自动获取当前季度
         url = f"https://openani.an-i.workers.dev/{season}/"
         rep = RequestUtils(
