@@ -150,9 +150,11 @@ class ANiStrm(_PluginBase):
 
     def get_anime_entries(self, season: str = "2025-7") -> list:
         url = f"https://ani.v300.eu.org/{season}/"
+        logger.debug(url)
         entries = []
         try:
             page = self.get_page(url)
+            logger.debug(page.text)
             page.wait_for_selector(".MuiListItemText-root", timeout=10000)
             items = page.locator(".MuiListItemText-root").all_text_contents()
             for i in range(0, len(items), 3):
@@ -184,8 +186,10 @@ class ANiStrm(_PluginBase):
     # """
     # 自动获取当前季度
         season = self.__get_ani_season()
+        logger.debug(f"获取当前季度: {season}")
         browser = PlaywrightHelper()
         entries = browser.get_anime_entries(season)
+        logger.debug(f"获取当前季度番剧列表: {season}")
 
         titles = [entry["title"] for entry in entries]
         if not titles:
