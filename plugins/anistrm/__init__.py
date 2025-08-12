@@ -14,6 +14,7 @@ from app.log import logger
 import xml.dom.minidom
 from app.utils.dom import DomUtils
 from bs4 import BeautifulSoup
+import requests
 
 def retry(ExceptionToCheck: Any,
           tries: int = 3, delay: int = 3, backoff: int = 1, logger: Any = None, ret: Any = None):
@@ -143,11 +144,10 @@ class ANiStrm(_PluginBase):
         logger.debug(f'文件002')
         logger.debug(f'请求季度页面 URL: {url}')
         logger.debug(f'文件003')
-        rep = RequestUtils(
-            ua=settings.USER_AGENT if settings.USER_AGENT else None,
-            proxies=settings.PROXY if settings.PROXY else None
-        ).get_html(url=url)
+        rep = requests.get(url=url)
         logger.debug(url)
+        if "text/html" not in response.headers.get("Content-Type", ""):
+            logger.warning("返回内容不是 HTML")
         if not rep or "<html" not in rep:
             logger.warning("页面内容为空或非 HTML 格式")
             return []
