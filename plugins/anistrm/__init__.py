@@ -13,7 +13,7 @@ from typing import Any, List, Dict, Tuple, Optional
 from app.log import logger
 import xml.dom.minidom
 from app.utils.dom import DomUtils
-
+from bs4 import BeautifulSoup
 
 def retry(ExceptionToCheck: Any,
           tries: int = 3, delay: int = 3, backoff: int = 1, logger: Any = None, ret: Any = None):
@@ -58,7 +58,7 @@ class ANiStrm(_PluginBase):
     # 插件图标
     plugin_icon = "https://raw.githubusercontent.com/honue/MoviePilot-Plugins/main/icons/anistrm.png"
     # 插件版本
-    plugin_version = "2.6.2"
+    plugin_version = "2.6.3"
     # 插件作者
     plugin_author = "honue,bluelunace"
     # 作者主页
@@ -138,6 +138,39 @@ class ANiStrm(_PluginBase):
         logger.debug(rep.text)
         files_json = rep.json()['files']
         return [file['name'] for file in files_json]
+
+          
+    def get_current_season_list(season: str = None, keyword: str = None) -> List[str]:
+    """
+    获取当前季度的番剧列表（.strm 文件名）
+
+    :param season: 指定季度（如 "2025-7"），为空则自动获取当前季度
+    :param keyword: 可选关键词过滤
+    :return: 番剧文件名列表
+    """
+    # 自动获取当前季度
+        url = f"https://openani.an-i.workers.dev/{season}/"
+        rep = RequestUtils(
+            ua=settings.USER_AGENT if settings.USER_AGENT else None,
+            proxies=settings.PROXY if settings.PROXY else None
+        ).get(url=url)
+
+        # 解析 HTML 内容
+        soup = BeautifulSoup(rep.text, "html.parser")
+        file_names = []
+
+        for tag in soup.find_all("span"):
+            name = tag.text.strip()
+            if name.endswith(".mp4"):
+                if keyword:
+                    if keyword.lower() in name.lower():
+                        file_names.append(name)
+                else:
+                    file_names.append(name)
+        logger.debug(file_names)
+        return file_names
+
+
 
     @retry(Exception, tries=3, logger=logger, ret=[])
     def get_latest_list(self) -> List:
