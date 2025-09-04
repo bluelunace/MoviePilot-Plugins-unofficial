@@ -16,7 +16,7 @@ from app.utils.dom import DomUtils
 from bs4 import BeautifulSoup
 import requests
 from app.helper.browser import PlaywrightHelper
-
+from urllib.parse import unquote
 
 def retry(ExceptionToCheck: Any,
           tries: int = 3, delay: int = 3, backoff: int = 1, logger: Any = None, ret: Any = None):
@@ -61,7 +61,7 @@ class ANiStrm(_PluginBase):
     # 插件图标
     plugin_icon = "https://raw.githubusercontent.com/honue/MoviePilot-Plugins/main/icons/anistrm.png"
     # 插件版本
-    plugin_version = "2.6.3"
+    plugin_version = "2.6.5"
     # 插件作者
     plugin_author = "honue,bluelunace"
     # 作者主页
@@ -232,7 +232,7 @@ class ANiStrm(_PluginBase):
             # 链接
             link = DomUtils.tag_value(item, "link", default="")
             rss_info['title'] = title
-            rss_info['link'] = link.replace("resources.ani.rip", "ani.v300.eu.org")
+            rss_info['link'] = unquote(link.replace("resources.ani.rip", "ani.v300.eu.org"))
             ret_array.append(rss_info)
         return ret_array
 
